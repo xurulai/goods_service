@@ -1,0 +1,7 @@
+{"level":"INFO","time":"2025-02-12T18:59:19.276+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-12T18:59:19.661+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-12T23:11:43.895+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-12T23:11:44.312+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-12T23:14:59.996+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-12T23:15:00.149+0800","caller":"goods_srv/main.go:85","msg":"service start..."}
+{"level":"INFO","time":"2025-02-12T23:15:00.156+0800","caller":"goods_srv/main.go:111","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}

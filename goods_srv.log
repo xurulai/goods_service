@@ -1,0 +1,70 @@
+{"level":"INFO","time":"2025-02-13T12:38:26.828+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-13T12:38:27.058+0800","caller":"goods_srv/main.go:85","msg":"service start..."}
+{"level":"INFO","time":"2025-02-13T12:38:27.060+0800","caller":"goods_srv/main.go:111","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-13T12:43:44.838+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-13T12:44:05.280+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-13T12:44:05.345+0800","caller":"goods_srv/main.go:85","msg":"service start..."}
+{"level":"INFO","time":"2025-02-13T12:44:05.349+0800","caller":"goods_srv/main.go:111","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-13T12:49:16.526+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-13T12:49:16.575+0800","caller":"goods_srv/main.go:85","msg":"service start..."}
+{"level":"INFO","time":"2025-02-13T12:49:16.578+0800","caller":"goods_srv/main.go:111","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-13T13:01:13.459+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-13T13:01:13.510+0800","caller":"goods_srv/main.go:85","msg":"service start..."}
+{"level":"INFO","time":"2025-02-13T13:01:13.512+0800","caller":"goods_srv/main.go:111","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-13T13:21:18.976+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-13T13:21:19.025+0800","caller":"goods_srv/main.go:85","msg":"service start..."}
+{"level":"INFO","time":"2025-02-13T13:21:19.028+0800","caller":"goods_srv/main.go:111","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T14:46:44.027+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T14:46:44.097+0800","caller":"goods_srv/main.go:88","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T14:46:44.101+0800","caller":"goods_srv/main.go:117","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T14:54:53.868+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T14:54:54.065+0800","caller":"goods_srv/main.go:88","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T14:54:54.068+0800","caller":"goods_srv/main.go:117","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T14:56:47.338+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T14:56:47.396+0800","caller":"goods_srv/main.go:86","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T14:56:47.400+0800","caller":"goods_srv/main.go:111","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T15:03:27.471+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T15:03:27.518+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T15:03:27.521+0800","caller":"goods_srv/main.go:116","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T15:08:24.766+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T15:08:24.878+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T15:08:24.882+0800","caller":"goods_srv/main.go:116","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T15:11:49.350+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T15:11:49.404+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T15:11:49.405+0800","caller":"goods_srv/main.go:115","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T15:29:00.319+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T15:29:00.604+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T15:29:00.604+0800","caller":"goods_srv/main.go:115","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T15:29:20.536+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T15:29:20.591+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T15:29:20.592+0800","caller":"goods_srv/main.go:115","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T15:45:14.535+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T15:45:14.602+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T15:45:14.603+0800","caller":"goods_srv/main.go:115","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T15:47:24.357+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T15:47:24.403+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T15:47:24.403+0800","caller":"goods_srv/main.go:115","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T16:03:03.080+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T16:03:03.398+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T16:03:03.400+0800","caller":"goods_srv/main.go:115","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T16:04:36.858+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T16:04:36.906+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T16:04:36.907+0800","caller":"goods_srv/main.go:115","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T16:06:18.307+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T16:06:18.356+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T16:06:18.357+0800","caller":"goods_srv/main.go:115","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T22:57:44.187+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T22:57:44.570+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T22:57:44.571+0800","caller":"goods_srv/main.go:115","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-20T23:01:26.031+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-20T23:01:26.087+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-20T23:01:26.088+0800","caller":"goods_srv/main.go:115","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-21T12:53:57.507+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-21T12:53:57.633+0800","caller":"goods_srv/main.go:87","msg":"service start..."}
+{"level":"INFO","time":"2025-02-21T12:53:57.635+0800","caller":"goods_srv/main.go:115","msg":"Serving gRPC-Gateway on http://0.0.0.0:8091"}
+{"level":"INFO","time":"2025-02-21T14:31:28.497+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-21T14:31:28.737+0800","caller":"goods_srv/main.go:80","msg":"service start..."}
+{"level":"INFO","time":"2025-02-21T14:39:56.932+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-21T14:39:57.077+0800","caller":"goods_srv/main.go:80","msg":"service start..."}
+{"level":"INFO","time":"2025-02-22T18:24:26.183+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-22T18:24:26.395+0800","caller":"goods_srv/main.go:80","msg":"service start..."}
