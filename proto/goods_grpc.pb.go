@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Goods_GetGoodsByRoom_FullMethodName = "/proto.Goods/GetGoodsByRoom"
-	Goods_GetGoodsDetail_FullMethodName = "/proto.Goods/GetGoodsDetail"
+	Goods_GetGoodsByRoom_FullMethodName    = "/proto.Goods/GetGoodsByRoom"
+	Goods_GetGoodsDetail_FullMethodName    = "/proto.Goods/GetGoodsDetail"
+	Goods_UpdateGoodsDetail_FullMethodName = "/proto.Goods/UpdateGoodsDetail"
 )
 
 // GoodsClient is the client API for Goods service.
@@ -33,6 +34,7 @@ type GoodsClient interface {
 	GetGoodsByRoom(ctx context.Context, in *GetGoodsByRoomReq, opts ...grpc.CallOption) (*GoodsListResp, error)
 	// 定义一个 RPC 方法 GetGoodsDetail，用于获取商品详情页
 	GetGoodsDetail(ctx context.Context, in *GetGoodsDetailReq, opts ...grpc.CallOption) (*GoodsDetail, error)
+	UpdateGoodsDetail(ctx context.Context, in *UpdateGoodsDetailReq, opts ...grpc.CallOption) (*Response, error)
 }
 
 type goodsClient struct {
@@ -63,6 +65,16 @@ func (c *goodsClient) GetGoodsDetail(ctx context.Context, in *GetGoodsDetailReq,
 	return out, nil
 }
 
+func (c *goodsClient) UpdateGoodsDetail(ctx context.Context, in *UpdateGoodsDetailReq, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, Goods_UpdateGoodsDetail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GoodsServer is the server API for Goods service.
 // All implementations must embed UnimplementedGoodsServer
 // for forward compatibility.
@@ -73,6 +85,7 @@ type GoodsServer interface {
 	GetGoodsByRoom(context.Context, *GetGoodsByRoomReq) (*GoodsListResp, error)
 	// 定义一个 RPC 方法 GetGoodsDetail，用于获取商品详情页
 	GetGoodsDetail(context.Context, *GetGoodsDetailReq) (*GoodsDetail, error)
+	UpdateGoodsDetail(context.Context, *UpdateGoodsDetailReq) (*Response, error)
 	mustEmbedUnimplementedGoodsServer()
 }
 
@@ -88,6 +101,9 @@ func (UnimplementedGoodsServer) GetGoodsByRoom(context.Context, *GetGoodsByRoomR
 }
 func (UnimplementedGoodsServer) GetGoodsDetail(context.Context, *GetGoodsDetailReq) (*GoodsDetail, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGoodsDetail not implemented")
+}
+func (UnimplementedGoodsServer) UpdateGoodsDetail(context.Context, *UpdateGoodsDetailReq) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateGoodsDetail not implemented")
 }
 func (UnimplementedGoodsServer) mustEmbedUnimplementedGoodsServer() {}
 func (UnimplementedGoodsServer) testEmbeddedByValue()               {}
@@ -146,6 +162,24 @@ func _Goods_GetGoodsDetail_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Goods_UpdateGoodsDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateGoodsDetailReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoodsServer).UpdateGoodsDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Goods_UpdateGoodsDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoodsServer).UpdateGoodsDetail(ctx, req.(*UpdateGoodsDetailReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Goods_ServiceDesc is the grpc.ServiceDesc for Goods service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -160,6 +194,10 @@ var Goods_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetGoodsDetail",
 			Handler:    _Goods_GetGoodsDetail_Handler,
+		},
+		{
+			MethodName: "UpdateGoodsDetail",
+			Handler:    _Goods_UpdateGoodsDetail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

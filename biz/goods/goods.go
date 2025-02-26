@@ -2,10 +2,14 @@ package goods
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"goods_srv/dao/mysql"
+	"goods_srv/dao/redis"
 	"goods_srv/errno"
 	"goods_srv/proto"
+	"log"
+	"time"
 )
 
 // biz层业务代码
@@ -63,29 +67,104 @@ func GetGoodsByRoom(ctx context.Context, roomId int64) (*proto.GoodsListResp, er
 	}
 	return resp, nil
 }
-func GetGoodsDeatailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail, error) {
-	//1.根据商品ID查询商品详情信息
-	goodsDetail, err := mysql.GetGoodsDetailById(ctx, goodsId)
-	if err != nil {
+func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail, error) {
+
+	cacheKey := fmt.Sprintf("goods_detail_%d", goodsId)
+
+	//1.尝试从缓存中获取商品详情
+	cachedData, err := redis.GetClient().Get(ctx, cacheKey).Result()
+	if err == nil {
+		//缓存命中
+		log.Printf("Cache hit for GoodsId: %d", goodsId)
+		var goodsDetail proto.GoodsDetail
+		if err := json.Unmarshal([]byte(cachedData), &goodsDetail); err != nil {
+			log.Printf("Failed to unmarshal cached data: %v", err)
+			return nil, errno.ErrQueryFailed
+		}
+		return &goodsDetail, nil
+	} else if err != nil { // 缓存查询失败
+		log.Printf("Failed to get data from cache: %v", err)
 		return nil, errno.ErrQueryFailed
 	}
-	//2.如果没有找到商品，返回错误
+	log.Printf("Cache miss for GoodsId: %d", goodsId)
+	// 1. 根据商品ID查询商品详情信息
+	goodsDetail, err := mysql.GetGoodsDetailById(ctx, goodsId)
+	if err != nil {
+		log.Printf("Failed to query goods detail: %v", err)
+		return nil, errno.ErrQueryFailed
+	}
+
+	// 2. 如果没有找到商品，返回错误
 	if goodsDetail == nil {
+		log.Printf("Goods detail not found for GoodsId: %d", goodsId)
 		return nil, errno.ErrGoodsDetailNull
 	}
 
-	// 3. 拼装响应数据
-	resp := &proto.GoodsDetail{
-		GoodsId:     goodsDetail.GoodsId,
-		CategoryId:  goodsDetail.CategoryId,
-		Status:      int32(goodsDetail.Status),
-		Title:       goodsDetail.Title,
-		Code:        goodsDetail.Code,      // 假设数据库中有 Code 字段
-		BrandName:   goodsDetail.BrandName, // 假设数据库中有 BrandName 字段
-		MarketPrice: fmt.Sprintf("%.2f", float64(goodsDetail.MarketPrice/100)),
-		Price:       fmt.Sprintf("%.2f", float64(goodsDetail.Price/100)),
-		Brief:       goodsDetail.Brief,
+	// 3. 检查关键字段是否为空或无效
+	if goodsDetail.GoodsId == 0 || goodsDetail.Title == "" || goodsDetail.Price == 0 {
+		log.Printf("Invalid goods detail data: %+v", goodsDetail)
+		return nil, errno.ErrGoodsDetailNull
 	}
 
+	// 4. 拼装响应数据
+	resp := &proto.GoodsDetail{
+		GoodsId:    goodsDetail.GoodsId,
+		CategoryId: goodsDetail.CategoryId,
+		Status:     int32(goodsDetail.Status),
+		Title:      goodsDetail.Title,
+		Code:       goodsDetail.Code,      // 假设数据库中有 Code 字段
+		BrandName:  goodsDetail.BrandName, // 假设数据库中有 BrandName 字段
+		Brief:      goodsDetail.Brief,
+	}
+
+	// 5. 处理价格字段，确保不会为空
+	if goodsDetail.MarketPrice > 0 {
+		resp.MarketPrice = fmt.Sprintf("%.2f", float64(goodsDetail.MarketPrice)/100)
+	} else {
+		resp.MarketPrice = "0.00"
+		log.Printf("MarketPrice is zero or invalid for GoodsId: %d", goodsId)
+	}
+
+	if goodsDetail.Price > 0 {
+		resp.Price = fmt.Sprintf("%.2f", float64(goodsDetail.Price)/100)
+	} else {
+		resp.Price = "0.00"
+		log.Printf("Price is zero or invalid for GoodsId: %d", goodsId)
+	}
+
+	// 7. 将查询结果存入缓存
+	cachedBytes, err := json.Marshal(resp) // 使用 cachedBytes 作为字节数组
+	if err != nil {
+		log.Printf("Failed to marshal data: %v", err)
+		return nil, errno.ErrQueryFailed
+	}
+
+	_, err = redis.GetClient().Set(ctx, cacheKey, cachedBytes, 10*time.Minute).Result()
+	if err != nil {
+		log.Printf("Failed to set data in cache: %v", err)
+	}
+
+	log.Printf("Returning goods detail response: %+v", resp)
 	return resp, nil
+}
+
+// UpdateGoodsDetail 更新商品详情，并删除缓存
+func UpdateGoodsDetail(ctx context.Context, goodsId int64,newPrice int64) (*proto.Response, error) {
+	// 1. 更新数据库
+	err := mysql.UpdateGoodsDetail(ctx, goodsId,newPrice)
+	if err != nil {
+		log.Printf("Failed to update goods detail: %v", err)
+		return nil, errno.ErrUpdateFailed
+	}
+
+	// 2. 删除缓存
+	cacheKey := fmt.Sprintf("goods_detail_%d", goodsId)
+	_, err = redis.GetClient().Del(ctx, cacheKey).Result()
+	if err != nil {
+		log.Printf("Failed to delete cache: %v", err)
+		return nil, errno.ErrCacheDeleteFailed
+	}
+
+	log.Printf("Cache deleted for GoodsId: %d", goodsId)
+	return &proto.Response{}, nil
 }

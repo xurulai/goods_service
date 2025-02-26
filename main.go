@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"goods_srv/config"
+	"goods_srv/dao/mysql"
+	"goods_srv/dao/redis"
 	"goods_srv/handler"
 	"goods_srv/logger"
 	"goods_srv/proto"
@@ -12,9 +14,11 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"goods_srv/dao/mysql"
+
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
 // GoodsServer 是一个 gRPC 服务结构体，实现了 proto.UnimplementedGoodsServer 接口。
@@ -23,48 +27,55 @@ type GoodsServer struct {
 }
 
 func main() {
-	// 0.从命令行获取可能的配置文件路径
-	// 例如：goods_service -conf="./conf/config_qa.yaml"
 	var cfn string
+	// 0. 从命令行获取配置文件路径，默认值为 "./conf/config.yaml"
+	// 例如：stock_service -conf="./conf/config_qa.yaml"
 	flag.StringVar(&cfn, "conf", "./conf/config.yaml", "指定配置文件路径")
 	flag.Parse()
-	//使用 flag 包解析命令行参数，允许用户通过 -conf 参数指定配置文件路径。
 
 	// 1. 加载配置文件
 	err := config.Init(cfn)
 	if err != nil {
-		panic(err) // 程序启动时加载配置文件失败直接退出
+		panic(err) // 如果加载配置文件失败，直接退出程序
 	}
 
-	// 2. 加载日志
+	// 2. 初始化日志模块
 	err = logger.Init(config.Conf.LogConfig, config.Conf.Mode)
 	if err != nil {
-		panic(err) // 程序启动时初始化日志模块失败直接退出
+		panic(err) // 如果初始化日志模块失败，直接退出程序
 	}
 
 	// 3. 初始化 MySQL 数据库连接
 	err = mysql.Init(config.Conf.MySQLConfig)
 	if err != nil {
-		panic(err) // 初始化 MySQL 失败，程序直接退出
+		panic(err) // 如果初始化 MySQL 数据库失败，直接退出程序
 	}
 
-	// 4. 初始化 Consul 服务注册中心
+	// 4.初始化 Redis 连接
+	err = redis.Init(config.Conf.RedisConfig)
+	if err != nil {
+		panic(err) // 如果初始化 Redis 失败，直接退出程序
+	}
+
 	err = registry.Init(config.Conf.ConsulConfig.Addr)
 	if err != nil {
-		panic(err) // 初始化注册中心失败，程序直接退出
+		zap.L().Error("Failed to initialize Consul", zap.Error(err))
+		// 可以选择退出或继续运行，取决于业务需求
+		panic(err)
 	}
 
 	// 监听端口
-	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%d", config.Conf.IP, config.Conf.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", config.Conf.Port))
 	if err != nil {
 		panic(err)
 	}
 
 	// 创建 gRPC 服务
 	s := grpc.NewServer()
-	// 注册商品服务到 gRPC 服务
+	// 注册健康检查服务
+	grpc_health_v1.RegisterHealthServer(s, health.NewServer())
+	// 注册股票服务到 gRPC 服务
 	proto.RegisterGoodsServer(s, &handler.GoodsSrv{})
-
 	// 启动 gRPC 服务
 	go func() {
 		err = s.Serve(lis)
@@ -74,17 +85,26 @@ func main() {
 	}()
 
 	// 注册服务到 Consul
-	registry.Reg.RegisterService(config.Conf.Name, config.Conf.IP, config.Conf.Port, nil)
+	err = registry.Reg.RegisterService(config.Conf.Name, config.Conf.IP, config.Conf.Port, nil)
+	if err != nil {
+		zap.L().Error("Failed to register service to Consul", zap.Error(err))
+		// 可以选择退出或继续运行，取决于业务需求
+		panic(err)
 
-	// 打印服务启动日志
-	zap.L().Info("service start...")
+	}
+	// 打印 gRPC 服务启动日志
+	zap.L().Info(
+		"rpc server start",
+		zap.String("ip", config.Conf.IP),
+		zap.Int("port", config.Conf.Port),
+	)
 
-	// 服务退出时要注销服务
+	// 服务退出时注销服务
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
-	<-quit // 正常会 hang 在此处
+	<-quit // 等待退出信号
 
-	// 退出时注销服务
+	// 注销服务
 	serviceId := fmt.Sprintf("%s-%s-%d", config.Conf.Name, config.Conf.IP, config.Conf.Port)
 	registry.Reg.Deregister(serviceId)
 }

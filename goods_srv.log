@@ -68,3 +68,58 @@
 {"level":"INFO","time":"2025-02-21T14:39:57.077+0800","caller":"goods_srv/main.go:80","msg":"service start..."}
 {"level":"INFO","time":"2025-02-22T18:24:26.183+0800","caller":"logger/logger.go:42","msg":"init logger success"}
 {"level":"INFO","time":"2025-02-22T18:24:26.395+0800","caller":"goods_srv/main.go:80","msg":"service start..."}
+{"level":"INFO","time":"2025-02-24T12:45:45.120+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T12:45:45.182+0800","caller":"goods_srv/main.go:80","msg":"service start..."}
+{"level":"INFO","time":"2025-02-24T13:12:37.330+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T13:12:37.610+0800","caller":"goods_srv/main.go:80","msg":"service start..."}
+{"level":"INFO","time":"2025-02-24T13:40:44.714+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"ERROR","time":"2025-02-24T13:40:44.962+0800","caller":"goods_srv/main.go:79","msg":"Failed to register service to Consul","error":"Put \"http://127.0.0.1:8500/v1/agent/service/register\": dial tcp 127.0.0.1:8500: connectex: No connection could be made because the target machine actively refused it."}
+{"level":"INFO","time":"2025-02-24T13:40:44.963+0800","caller":"goods_srv/main.go:83","msg":"service start..."}
+{"level":"INFO","time":"2025-02-24T13:42:56.724+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T13:42:56.822+0800","caller":"goods_srv/main.go:83","msg":"service start..."}
+{"level":"INFO","time":"2025-02-24T14:11:29.206+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T14:11:29.260+0800","caller":"goods_srv/main.go:83","msg":"service start..."}
+{"level":"INFO","time":"2025-02-24T14:17:06.318+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T14:17:06.374+0800","caller":"goods_srv/main.go:83","msg":"service start..."}
+{"level":"INFO","time":"2025-02-24T14:20:33.754+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T14:20:33.805+0800","caller":"goods_srv/main.go:85","msg":"service start..."}
+{"level":"INFO","time":"2025-02-24T14:26:38.819+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T14:26:38.872+0800","caller":"goods_srv/main.go:82","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-24T14:29:47.752+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T14:29:47.807+0800","caller":"goods_srv/main.go:82","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-24T14:33:56.551+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T14:33:56.606+0800","caller":"goods_srv/main.go:88","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-24T14:35:41.349+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T14:35:41.403+0800","caller":"goods_srv/main.go:88","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-24T14:53:27.364+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T14:53:27.424+0800","caller":"goods_srv/main.go:88","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-24T14:58:14.040+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T14:58:14.094+0800","caller":"goods_srv/main.go:88","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-24T14:59:29.034+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T14:59:29.087+0800","caller":"goods_srv/main.go:88","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-24T19:08:10.769+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T19:08:11.266+0800","caller":"goods_srv/main.go:88","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-24T19:10:58.580+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T19:10:58.754+0800","caller":"goods_srv/main.go:89","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-24T19:49:43.153+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-24T19:49:43.316+0800","caller":"goods_srv/main.go:89","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-25T13:07:08.857+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"ERROR","time":"2025-02-25T13:07:08.958+0800","caller":"goods_srv/main.go:83","msg":"Failed to register service to Consul","error":"Put \"http://127.0.0.1:8500/v1/agent/service/register\": dial tcp 127.0.0.1:8500: connectex: No connection could be made because the target machine actively refused it."}
+{"level":"INFO","time":"2025-02-25T13:09:28.894+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-25T13:09:29.145+0800","caller":"goods_srv/main.go:89","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-25T13:25:54.764+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-25T13:25:54.827+0800","caller":"goods_srv/main.go:89","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-26T13:19:21.713+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"ERROR","time":"2025-02-26T13:19:21.775+0800","caller":"goods_srv/main.go:83","msg":"Failed to register service to Consul","error":"Put \"http://127.0.0.1:8500/v1/agent/service/register\": dial tcp 127.0.0.1:8500: connectex: No connection could be made because the target machine actively refused it."}
+{"level":"INFO","time":"2025-02-26T13:37:28.171+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-26T13:37:28.405+0800","caller":"goods_srv/main.go:89","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-26T14:00:11.597+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"ERROR","time":"2025-02-26T14:00:11.667+0800","caller":"goods_srv/main.go:90","msg":"Failed to register service to Consul","error":"Put \"http://127.0.0.1:8500/v1/agent/service/register\": dial tcp 127.0.0.1:8500: connectex: No connection could be made because the target machine actively refused it."}
+{"level":"INFO","time":"2025-02-26T14:03:57.912+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-26T14:03:58.171+0800","caller":"goods_srv/main.go:96","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-26T15:55:31.667+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-26T15:55:31.796+0800","caller":"goods_srv/main.go:96","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-26T16:16:45.424+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-26T16:16:45.484+0800","caller":"goods_srv/main.go:96","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-02-26T16:35:26.847+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-02-26T16:35:27.249+0800","caller":"goods_srv/main.go:96","msg":"rpc server start","ip":"127.0.0.1","port":8391}

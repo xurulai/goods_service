@@ -4,6 +4,11 @@ option go_package = ".;proto";  // 指定生成的 Go 代码所在的包路径
 
 package proto;  // 定义当前文件的包名，用于避免命名冲突
 
+// 响应消息结构
+message Response {
+    bool success = 1;       // 操作是否成功
+    string message = 2;     // 操作结果的描述信息
+}
 
 // 定义一个名为 Goods 的服务
 service Goods {
@@ -12,6 +17,7 @@ service Goods {
 
     // 定义一个 RPC 方法 GetGoodsDetail，用于获取商品详情页
     rpc GetGoodsDetail(GetGoodsDetailReq) returns (GoodsDetail);
+    rpc UpdateGoodsDetail(UpdateGoodsDetailReq)returns(Response);
 }
 
 // 定义请求消息 GetGoodsByRoomReq，用于获取直播间商品列表
@@ -41,6 +47,12 @@ message GoodsInfo {
 message GetGoodsDetailReq {
     int64 GoodsId = 1;  // 商品 ID
     int64 UserId = 2;   // 用户 ID
+}
+
+// 定义请求消息 UpdateGoodsDetailReq，用于获取商品详情
+message UpdateGoodsDetailReq {
+    int64 GoodsId = 1;  // 商品 ID
+    int64 price = 2;    //更新后商品的销售价格
 }
 
 // 定义响应消息 GoodsDetail，用于返回商品详情

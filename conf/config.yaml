@@ -1,7 +1,7 @@
 name: "goods_srv"
 mode: "dev"
 ip: "127.0.0.1"
-port: 8384
+port: 8391
 httpPort: 8091
 version: "v0.0.1"
 start_time: "2025-02-03"

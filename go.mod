@@ -4,6 +4,8 @@ go 1.23.0
 
 require (
 	github.com/fsnotify/fsnotify v1.8.0
+	github.com/go-redis/redis/v8 v8.11.5
+	github.com/go-redsync/redsync/v4 v4.13.0
 	github.com/hashicorp/consul/api v1.28.2
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/spf13/viper v1.19.0
@@ -17,6 +19,8 @@ require (
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/color v1.14.1 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect

@@ -4,6 +4,7 @@ import (
 	"context"
 	"goods_srv/errno"
 	"goods_srv/model"
+	"log"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -74,8 +75,10 @@ func GetGoodsByIdList(ctx context.Context, idList []int64) ([]*model.Goods, erro
 	return data, nil
 }
 
-// GetGoods ById据id查询商品信息
+// GetGoods ById据id查询商品信息,使用缓存
 func GetGoodsDetailById(ctx context.Context, goodsId int64) (*model.Goods, error) {
+
+	
 	// 定义一个切片变量 data，用于存储查询结果
 	// model.Goods 是一个结构体，表示商品信息
 	var data = &model.Goods{}
@@ -98,4 +101,33 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*model.Goods, error
 
 	// 如果查询成功（无论是否有数据），返回查询结果
 	return data, nil
+}
+
+func UpdateGoodsDetail(ctx context.Context, goodsId int64, newPrice int64) error {
+
+    // 使用 gorm 的 WithContext 方法，将上下文传递给数据库操作
+    result := db.WithContext(ctx).
+        // 指定操作的模型，这里操作的是 model.Goods 表
+        Model(&model.Goods{}).
+        // 指定更新条件，根据 goods_id 更新
+        Where("goods_id = ?", goodsId).
+        // 只更新 price 字段
+        Updates(map[string]interface{}{
+            "price": newPrice,
+        })
+
+    // 检查更新是否成功
+    if result.Error != nil {
+    	log.Printf("Failed to update goods detail: %v", result.Error)
+        return errno.ErrUpdateFailed
+    }
+
+    // 如果没有行被更新，返回错误
+    if result.RowsAffected == 0 {
+        log.Printf("No rows affected for goodsId: %d", goodsId)
+        return errno.ErrGoodsDetailNotFound
+    }
+
+    // 更新成功，返回 nil
+    return nil
 }

@@ -40,7 +40,7 @@ func (s *GoodsSrv) GetGoodsDetail(ctx context.Context, req *proto.GetGoodsDetail
         return nil, status.Error(codes.InvalidArgument, "请求参数有误")
     }
 
-    data, err := goods.GetGoodsDeatailById(ctx, req.GetGoodsId())
+    data, err := goods.GetGoodsDetailById(ctx, req.GetGoodsId())
     if err != nil {
         log.Printf("Failed to get goods detail: %v", err)
         return nil, status.Error(codes.Internal, "内部错误")
@@ -48,4 +48,32 @@ func (s *GoodsSrv) GetGoodsDetail(ctx context.Context, req *proto.GetGoodsDetail
 
     log.Printf("Returning response: %+v", data)
     return data, nil
+}
+
+func (s *GoodsSrv) UpdateGoodsDetail(ctx context.Context, req *proto.UpdateGoodsDetailReq) (*proto.Response, error) {
+    log.Printf("Received UpdateGoodsDetail request: %+v", req)
+
+    if req.GetGoodsId() <= 0 {
+        log.Printf("Invalid request parameters: %+v", req)
+        return nil, status.Error(codes.InvalidArgument, "请求参数有误")
+    }
+    if req.GetPrice() <= 0 {
+        log.Printf("Invalid request parameters: %+v", req)
+        return nil, status.Error(codes.InvalidArgument, "请求参数有误")
+    }
+
+    // 更新数据库中的商品信息
+    _,err := goods.UpdateGoodsDetail(ctx, req.GetGoodsId(),req.GetPrice())
+    if err != nil {
+        log.Printf("Failed to update goods detail: %v", err)
+        return nil, status.Error(codes.Internal, "内部错误")
+    }
+
+
+    // 3. 返回成功响应
+    log.Printf("Goods detail updated successfully for GoodsId: %d", req.GetGoodsId())
+    return &proto.Response{
+        Success: true,
+        Message: "商品信息更新成功",
+    }, nil
 }
