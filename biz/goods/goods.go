@@ -67,14 +67,15 @@ func GetGoodsByRoom(ctx context.Context, roomId int64) (*proto.GoodsListResp, er
 	}
 	return resp, nil
 }
-func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail, error) {
 
+func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail, error) {
+	// 构造缓存键，用于从 Redis 中查询商品详情
 	cacheKey := fmt.Sprintf("goods_detail_%d", goodsId)
 
-	//1.尝试从缓存中获取商品详情
+	// 1. 尝试从 Redis 缓存中获取商品详情
 	cachedData, err := redis.GetClient().Get(ctx, cacheKey).Result()
-	if err == nil {
-		//缓存命中
+	if err == nil && cachedData != "" {
+		// 缓存命中
 		log.Printf("Cache hit for GoodsId: %d", goodsId)
 		var goodsDetail proto.GoodsDetail
 		if err := json.Unmarshal([]byte(cachedData), &goodsDetail); err != nil {
@@ -82,43 +83,47 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail,
 			return nil, errno.ErrQueryFailed
 		}
 		return &goodsDetail, nil
-	} else if err != nil { // 缓存查询失败
+	} else if err != nil {
 		log.Printf("Failed to get data from cache: %v", err)
-		return nil, errno.ErrQueryFailed
+	} else {
+		log.Printf("Cache miss for GoodsId: %d", goodsId)
 	}
-	log.Printf("Cache miss for GoodsId: %d", goodsId)
-	// 1. 根据商品ID查询商品详情信息
+	
+
+	// 缓存未命中，从数据库中查询商品详情
+	// 1. 根据商品 ID 从 MySQL 数据库中查询商品详情
 	goodsDetail, err := mysql.GetGoodsDetailById(ctx, goodsId)
 	if err != nil {
 		log.Printf("Failed to query goods detail: %v", err)
 		return nil, errno.ErrQueryFailed
 	}
 
-	// 2. 如果没有找到商品，返回错误
+	// 2. 检查查询结果是否为空
 	if goodsDetail == nil {
 		log.Printf("Goods detail not found for GoodsId: %d", goodsId)
 		return nil, errno.ErrGoodsDetailNull
 	}
 
-	// 3. 检查关键字段是否为空或无效
+	// 3. 检查商品详情数据是否有效（关键字段是否为空或为零）
 	if goodsDetail.GoodsId == 0 || goodsDetail.Title == "" || goodsDetail.Price == 0 {
 		log.Printf("Invalid goods detail data: %+v", goodsDetail)
 		return nil, errno.ErrGoodsDetailNull
 	}
 
-	// 4. 拼装响应数据
+	// 4. 构造返回的响应数据
 	resp := &proto.GoodsDetail{
 		GoodsId:    goodsDetail.GoodsId,
 		CategoryId: goodsDetail.CategoryId,
 		Status:     int32(goodsDetail.Status),
 		Title:      goodsDetail.Title,
-		Code:       goodsDetail.Code,      // 假设数据库中有 Code 字段
-		BrandName:  goodsDetail.BrandName, // 假设数据库中有 BrandName 字段
+		Code:       goodsDetail.Code,      // 商品编码
+		BrandName:  goodsDetail.BrandName, // 商品品牌名称
 		Brief:      goodsDetail.Brief,
 	}
 
-	// 5. 处理价格字段，确保不会为空
+	// 5. 格式化市场价格和价格字段
 	if goodsDetail.MarketPrice > 0 {
+		// 将市场价格除以 100 并格式化为两位小数的字符串
 		resp.MarketPrice = fmt.Sprintf("%.2f", float64(goodsDetail.MarketPrice)/100)
 	} else {
 		resp.MarketPrice = "0.00"
@@ -126,32 +131,35 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail,
 	}
 
 	if goodsDetail.Price > 0 {
+		// 将价格除以 100 并格式化为两位小数的字符串
 		resp.Price = fmt.Sprintf("%.2f", float64(goodsDetail.Price)/100)
 	} else {
 		resp.Price = "0.00"
 		log.Printf("Price is zero or invalid for GoodsId: %d", goodsId)
 	}
 
-	// 7. 将查询结果存入缓存
-	cachedBytes, err := json.Marshal(resp) // 使用 cachedBytes 作为字节数组
+	// 6. 将查询结果序列化为 JSON 数据
+	cachedBytes, err := json.Marshal(resp)
 	if err != nil {
 		log.Printf("Failed to marshal data: %v", err)
 		return nil, errno.ErrQueryFailed
 	}
 
+	// 7. 将查询结果存入 Redis 缓存，设置缓存有效期为 10 分钟
 	_, err = redis.GetClient().Set(ctx, cacheKey, cachedBytes, 10*time.Minute).Result()
 	if err != nil {
 		log.Printf("Failed to set data in cache: %v", err)
 	}
 
+	// 返回商品详情响应
 	log.Printf("Returning goods detail response: %+v", resp)
 	return resp, nil
 }
 
 // UpdateGoodsDetail 更新商品详情，并删除缓存
-func UpdateGoodsDetail(ctx context.Context, goodsId int64,newPrice int64) (*proto.Response, error) {
+func UpdateGoodsDetail(ctx context.Context, goodsId int64, newPrice int64) (*proto.Response, error) {
 	// 1. 更新数据库
-	err := mysql.UpdateGoodsDetail(ctx, goodsId,newPrice)
+	err := mysql.UpdateGoodsDetail(ctx, goodsId, newPrice)
 	if err != nil {
 		log.Printf("Failed to update goods detail: %v", err)
 		return nil, errno.ErrUpdateFailed

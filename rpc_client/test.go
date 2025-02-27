@@ -19,17 +19,14 @@ var (
 // 初始化 gRPC 客户端连接和客户端实例
 func init() {
 	var err error
-	// 建立 gRPC 客户端连接
 	conn, err = grpc.Dial(
-		"127.0.0.1:8391", // gRPC 服务的地址和端口
-		grpc.WithTransportCredentials(insecure.NewCredentials()),           // 使用不安全的连接（仅适用于开发环境）
-		grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(1024*1024*10)), // 设置最大接收消息大小为 10MB
+		"127.0.0.1:8391", // gRPC 服务地址
+		grpc.WithTransportCredentials(insecure.NewCredentials()), // 使用不安全的连接（仅用于测试环境）
 	)
 	if err != nil {
-		log.Fatalf("Failed to connect to server: %v", err) // 如果连接失败，记录错误并退出
+		panic(err) // 如果连接失败，直接 panic
 	}
-	// 创建 gRPC 客户端实例
-	client = proto.NewGoodsClient(conn)
+	client = proto.NewGoodsClient(conn) // 创建 gRPC 客户端对象
 }
 
 // 测试 GetGoodsDetail 方法的函数
@@ -62,7 +59,7 @@ func TestUpdateGoodsDetail(wg *sync.WaitGroup, index int) {
 	// 构造请求参数
 	param := &proto.UpdateGoodsDetailReq{
 		GoodsId: int64(index + 1001), // 商品 ID 从 1001 开始
-		Price:   int64(index * 100),  // 更新后的销售价格（单位：分）
+		Price:   int64(index * 200),  // 更新后的销售价格（单位：分）
 	}
 	log.Printf("Sending request to update GoodsId: %d with new price: %d", param.GoodsId, param.Price) // 记录发送的请求
 
@@ -80,9 +77,9 @@ func main() {
 
 	// 启动多个协程测试 GetGoodsDetail 方法
 	for i := 0; i < 5; i++ {
-		wg.Add(1)                     // 增加 WaitGroup 的计数
-		go TestGetGoodsDetail(&wg, i) // 启动协程调用 TestGetGoodsDetail 函数
-		//go TestUpdateGoodsDetail(&wg, i)
+		wg.Add(1) // 增加 WaitGroup 的计数
+		//go TestGetGoodsDetail(&wg, i) // 启动协程调用 TestGetGoodsDetail 函数
+		go TestUpdateGoodsDetail(&wg, i)
 	}
 	wg.Wait() // 等待所有协程完成
 }
