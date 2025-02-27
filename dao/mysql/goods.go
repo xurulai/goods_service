@@ -78,7 +78,6 @@ func GetGoodsByIdList(ctx context.Context, idList []int64) ([]*model.Goods, erro
 // GetGoods ById据id查询商品信息,使用缓存
 func GetGoodsDetailById(ctx context.Context, goodsId int64) (*model.Goods, error) {
 
-	
 	// 定义一个切片变量 data，用于存储查询结果
 	// model.Goods 是一个结构体，表示商品信息
 	var data = &model.Goods{}
@@ -105,29 +104,50 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*model.Goods, error
 
 func UpdateGoodsDetail(ctx context.Context, goodsId int64, newPrice int64) error {
 
-    // 使用 gorm 的 WithContext 方法，将上下文传递给数据库操作
-    result := db.WithContext(ctx).
-        // 指定操作的模型，这里操作的是 model.Goods 表
-        Model(&model.Goods{}).
-        // 指定更新条件，根据 goods_id 更新
-        Where("goods_id = ?", goodsId).
-        // 只更新 price 字段
-        Updates(map[string]interface{}{
-            "price": newPrice,
-        })
+	// 使用 gorm 的 WithContext 方法，将上下文传递给数据库操作
+	result := db.WithContext(ctx).
+		// 指定操作的模型，这里操作的是 model.Goods 表
+		Model(&model.Goods{}).
+		// 指定更新条件，根据 goods_id 更新
+		Where("goods_id = ?", goodsId).
+		// 只更新 price 字段
+		Updates(map[string]interface{}{
+			"price": newPrice,
+		})
 
-    // 检查更新是否成功
-    if result.Error != nil {
-    	log.Printf("Failed to update goods detail: %v", result.Error)
-        return errno.ErrUpdateFailed
-    }
+	// 检查更新是否成功
+	if result.Error != nil {
+		log.Printf("Failed to update goods detail: %v", result.Error)
+		return errno.ErrUpdateFailed
+	}
 
-    // 如果没有行被更新，返回错误
-    if result.RowsAffected == 0 {
-        log.Printf("No rows affected for goodsId: %d", goodsId)
-        return errno.ErrGoodsDetailNotFound
-    }
+	// 如果没有行被更新，返回错误
+	if result.RowsAffected == 0 {
+		log.Printf("No rows affected for goodsId: %d", goodsId)
+		return errno.ErrGoodsDetailNotFound
+	}
 
-    // 更新成功，返回 nil
-    return nil
+	// 更新成功，返回 nil
+	return nil
+}
+
+// GetAllGoodsIDs 查询数据库中所有商品的 ID
+func GetAllGoodsIDs(ctx context.Context) ([]int64, error) {
+	var goodsIDs []int64
+
+	// 使用 gorm 的 WithContext 方法，确保数据库操作可以正确处理超时、取消等操作
+	err := db.WithContext(ctx).
+		// 指定操作的模型，这里操作的是 model.Goods 表
+		Model(&model.Goods{}).
+		// 选择只查询 goods_id 字段
+		Select("goods_id").
+		// 执行查询操作，将结果存储到 goodsIDs 中
+		Find(&goodsIDs).Error
+
+	// 如果查询出错
+	if err != nil {
+		return nil, errno.ErrQueryFailed
+	}
+
+	return goodsIDs, nil
 }

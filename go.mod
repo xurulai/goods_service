@@ -9,6 +9,7 @@ require (
 	github.com/hashicorp/consul/api v1.28.2
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/spf13/viper v1.19.0
+	github.com/willf/bloom v2.0.3+incompatible
 	go.uber.org/zap v1.27.0
 	google.golang.org/grpc v1.70.0
 	google.golang.org/protobuf v1.36.5
@@ -44,10 +45,12 @@ require (
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
+	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
+	github.com/willf/bitset v0.0.0-00010101000000-000000000000 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	golang.org/x/net v0.33.0 // indirect
@@ -61,3 +64,5 @@ require (
 )
 
 replace github.com/siddontang/go-mysql => github.com/go-mysql-org/go-mysql v1.11.0
+
+replace github.com/willf/bitset => github.com/bits-and-blooms/bitset v1.21.0

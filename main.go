@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	bloomfilter "goods_srv/BloomFilter"
 	"goods_srv/config"
 	"goods_srv/dao/mysql"
 	"goods_srv/dao/redis"
@@ -28,6 +30,7 @@ type GoodsServer struct {
 
 func main() {
 	var cfn string
+	ctx := context.Background()
 	// 0. 从命令行获取配置文件路径，默认值为 "./conf/config.yaml"
 	// 例如：stock_service -conf="./conf/config_qa.yaml"
 	flag.StringVar(&cfn, "conf", "./conf/config.yaml", "指定配置文件路径")
@@ -55,6 +58,10 @@ func main() {
 	err = redis.Init(config.Conf.RedisConfig)
 	if err != nil {
 		panic(err) // 如果初始化 Redis 失败，直接退出程序
+	}
+	err = bloomfilter.InitBloomFilter(ctx)
+	if err != nil {
+		panic(err)
 	}
 
 	err = registry.Init(config.Conf.ConsulConfig.Addr)
