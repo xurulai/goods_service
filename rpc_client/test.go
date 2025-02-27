@@ -78,8 +78,8 @@ func main() {
 	// 启动多个协程测试 GetGoodsDetail 方法
 	for i := 0; i < 5; i++ {
 		wg.Add(1) // 增加 WaitGroup 的计数
-		//go TestGetGoodsDetail(&wg, i) // 启动协程调用 TestGetGoodsDetail 函数
-		go TestUpdateGoodsDetail(&wg, i)
+		go TestGetGoodsDetail(&wg, i) // 启动协程调用 TestGetGoodsDetail 函数
+		//go TestUpdateGoodsDetail(&wg, i)
 	}
 	wg.Wait() // 等待所有协程完成
 }

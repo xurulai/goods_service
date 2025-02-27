@@ -9,6 +9,7 @@ import (
 	"goods_srv/errno"
 	"goods_srv/proto"
 	"log"
+	"math/rand"
 	"time"
 )
 
@@ -88,7 +89,6 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail,
 	} else {
 		log.Printf("Cache miss for GoodsId: %d", goodsId)
 	}
-	
 
 	// 缓存未命中，从数据库中查询商品详情
 	// 1. 根据商品 ID 从 MySQL 数据库中查询商品详情
@@ -145,8 +145,12 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail,
 		return nil, errno.ErrQueryFailed
 	}
 
-	// 7. 将查询结果存入 Redis 缓存，设置缓存有效期为 10 分钟
-	_, err = redis.GetClient().Set(ctx, cacheKey, cachedBytes, 10*time.Minute).Result()
+	// 7. 将查询结果存入 Redis 缓存，设置随机过期时间
+	// 基础过期时间为 10 分钟，随机增加 0-5 分钟
+	baseTTL := 10 * time.Minute
+	randomTTL := time.Duration(rand.Intn(5*60)) * time.Second
+	totalTTL := baseTTL + randomTTL
+	_, err = redis.GetClient().Set(ctx, cacheKey, cachedBytes, totalTTL).Result()
 	if err != nil {
 		log.Printf("Failed to set data in cache: %v", err)
 	}
