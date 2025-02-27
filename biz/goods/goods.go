@@ -70,28 +70,44 @@ func GetGoodsByRoom(ctx context.Context, roomId int64) (*proto.GoodsListResp, er
 }
 
 func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail, error) {
-	// 构造缓存键，用于从 Redis 中查询商品详情
+	// 构造缓存键
 	cacheKey := fmt.Sprintf("goods_detail_%d", goodsId)
 
-	// 1. 尝试从 Redis 缓存中获取商品详情
+	// 1. 首先尝试从 Redis 缓存中获取数据
 	cachedData, err := redis.GetClient().Get(ctx, cacheKey).Result()
 	if err == nil && cachedData != "" {
 		// 缓存命中
 		log.Printf("Cache hit for GoodsId: %d", goodsId)
 		var goodsDetail proto.GoodsDetail
+		// 将缓存中的 JSON 数据反序列化为 GoodsDetail 结构体
 		if err := json.Unmarshal([]byte(cachedData), &goodsDetail); err != nil {
 			log.Printf("Failed to unmarshal cached data: %v", err)
 			return nil, errno.ErrQueryFailed
 		}
 		return &goodsDetail, nil
 	} else if err != nil {
+		// 如果从 Redis 获取数据失败，记录日志
 		log.Printf("Failed to get data from cache: %v", err)
 	} else {
+		// 缓存未命中
 		log.Printf("Cache miss for GoodsId: %d", goodsId)
 	}
 
-	// 缓存未命中，从数据库中查询商品详情
-	// 1. 根据商品 ID 从 MySQL 数据库中查询商品详情
+	// 缓存未命中，从数据库中查询数据
+	// 1. 使用商品 ID 从 MySQL 数据库中查询商品详情
+
+	// 构造分布式锁的 key。
+	mutexname := fmt.Sprintf("lock_goods_detail_%d", goodsId)
+
+	// 创建 Redis 分布式锁。
+	mutex := redis.Rs.NewMutex(mutexname)
+
+	// 尝试获取锁。
+	if err := mutex.Lock(); err != nil {
+		return nil, errno.ErrGetLockFailed
+	}
+	defer mutex.Unlock() // 确保在函数结束时释放锁。
+
 	goodsDetail, err := mysql.GetGoodsDetailById(ctx, goodsId)
 	if err != nil {
 		log.Printf("Failed to query goods detail: %v", err)
@@ -104,7 +120,7 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail,
 		return nil, errno.ErrGoodsDetailNull
 	}
 
-	// 3. 检查商品详情数据是否有效（关键字段是否为空或为零）
+	// 3. 检查商品详情数据是否有效
 	if goodsDetail.GoodsId == 0 || goodsDetail.Title == "" || goodsDetail.Price == 0 {
 		log.Printf("Invalid goods detail data: %+v", goodsDetail)
 		return nil, errno.ErrGoodsDetailNull
@@ -123,7 +139,7 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail,
 
 	// 5. 格式化市场价格和价格字段
 	if goodsDetail.MarketPrice > 0 {
-		// 将市场价格除以 100 并格式化为两位小数的字符串
+		// 如果市场价格大于 0，将其除以 100 转换为浮点数，并格式化为两位小数
 		resp.MarketPrice = fmt.Sprintf("%.2f", float64(goodsDetail.MarketPrice)/100)
 	} else {
 		resp.MarketPrice = "0.00"
@@ -131,7 +147,7 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail,
 	}
 
 	if goodsDetail.Price > 0 {
-		// 将价格除以 100 并格式化为两位小数的字符串
+		// 如果价格大于 0，将其除以 100 转换为浮点数，并格式化为两位小数
 		resp.Price = fmt.Sprintf("%.2f", float64(goodsDetail.Price)/100)
 	} else {
 		resp.Price = "0.00"
@@ -145,8 +161,8 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail,
 		return nil, errno.ErrQueryFailed
 	}
 
-	// 7. 将查询结果存入 Redis 缓存，设置随机过期时间
-	// 基础过期时间为 10 分钟，随机增加 0-5 分钟
+	// 7. 将序列化后的数据写入 Redis 缓存
+	// 设置缓存的基础过期时间（10 分钟）和随机过期时间（0-5 分钟），避免缓存同时过期
 	baseTTL := 10 * time.Minute
 	randomTTL := time.Duration(rand.Intn(5*60)) * time.Second
 	totalTTL := baseTTL + randomTTL

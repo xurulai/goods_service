@@ -8,4 +8,5 @@ var (
 	ErrUpdateFailed      = errors.New("update goodsdetail failed")
 	ErrCacheDeleteFailed = errors.New("delete cache failed")
 	ErrGoodsDetailNotFound = errors.New("found goodsdetail failed")
+	ErrGetLockFailed = errors.New("get lock failed")
 )
