@@ -148,3 +148,7 @@
 {"level":"INFO","time":"2025-02-27T16:06:52.984+0800","caller":"goods_srv/main.go:96","msg":"rpc server start","ip":"127.0.0.1","port":8391}
 {"level":"INFO","time":"2025-02-27T20:19:32.518+0800","caller":"logger/logger.go:42","msg":"init logger success"}
 {"level":"INFO","time":"2025-02-27T20:19:33.204+0800","caller":"goods_srv/main.go:103","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-04-02T12:31:47.797+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-04-02T12:31:48.052+0800","caller":"goods_srv/main.go:104","msg":"rpc server start","ip":"127.0.0.1","port":8391}
+{"level":"INFO","time":"2025-04-03T09:43:01.797+0800","caller":"logger/logger.go:42","msg":"init logger success"}
+{"level":"INFO","time":"2025-04-03T09:43:02.274+0800","caller":"goods_srv/main.go:104","msg":"rpc server start","ip":"127.0.0.1","port":8391}

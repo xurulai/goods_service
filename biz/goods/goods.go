@@ -10,11 +10,14 @@ import (
 	"goods_srv/proto"
 	"log"
 	"math/rand"
+	"sync"
 	"time"
 )
 
 // biz层业务代码
 // biz -> dao
+
+var localCache = &sync.Map{}
 
 // GetRoomGoodsListProto 根据直播间 ID 查询直播间绑定的所有商品信息，并组装成 protobuf 响应对象返回
 func GetGoodsByRoom(ctx context.Context, roomId int64) (*proto.GoodsListResp, error) {
@@ -73,7 +76,13 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail,
 	// 构造缓存键
 	cacheKey := fmt.Sprintf("goods_detail_%d", goodsId)
 
-	// 1. 首先尝试从 Redis 缓存中获取数据
+
+	//1.首先尝试从本地缓存中获取数据
+	if localCacheData,ok := localCache.Load(cacheKey);ok{
+		log.Printf("Local cache hit:%d", goodsId)
+		return localCacheData.(*proto.GoodsDetail), nil
+	}
+	// 2. 首先尝试从 Redis 缓存中获取数据
 	cachedData, err := redis.GetClient().Get(ctx, cacheKey).Result()
 	if err == nil && cachedData != "" {
 		// 缓存命中
@@ -162,7 +171,7 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail,
 	}
 
 	// 7. 将序列化后的数据写入 Redis 缓存
-	// 设置缓存的基础过期时间（10 分钟）和随机过期时间（0-5 分钟），避免缓存同时过期
+	// 设置缓存的基础过期时间（10 分钟）和随机过期时间（0-5 分钟），避免缓存同时过期,解决缓存雪崩
 	baseTTL := 10 * time.Minute
 	randomTTL := time.Duration(rand.Intn(5*60)) * time.Second
 	totalTTL := baseTTL + randomTTL
@@ -170,6 +179,9 @@ func GetGoodsDetailById(ctx context.Context, goodsId int64) (*proto.GoodsDetail,
 	if err != nil {
 		log.Printf("Failed to set data in cache: %v", err)
 	}
+
+	//将数据存入本地缓存
+	setLocalCache(cacheKey, resp, time.Minute*10)
 
 	// 返回商品详情响应
 	log.Printf("Returning goods detail response: %+v", resp)
@@ -195,4 +207,17 @@ func UpdateGoodsDetail(ctx context.Context, goodsId int64, newPrice int64) (*pro
 
 	log.Printf("Cache deleted for GoodsId: %d", goodsId)
 	return &proto.Response{}, nil
+}
+
+
+//设置本地缓存
+func setLocalCache(key string,value interface{},ttl time.Duration){
+	//设置本地缓存
+	localCache.Store(key,value)
+
+	// 启动一个 goroutine 来处理缓存过期
+	go func() {
+		time.Sleep(ttl)
+		localCache.Delete(key)
+	}()
 }

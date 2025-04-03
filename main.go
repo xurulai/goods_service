@@ -59,6 +59,7 @@ func main() {
 	if err != nil {
 		panic(err) // 如果初始化 Redis 失败，直接退出程序
 	}
+	//5.初始化布隆过滤器并启动
 	err = bloomfilter.InitBloomFilter(ctx)
 	if err != nil {
 		panic(err)
